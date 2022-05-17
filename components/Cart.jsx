@@ -5,20 +5,26 @@ import { useSnackbar } from 'notistack'
 import Axios from '@/utils/functions/Axios'
 
 const Cart = ({ open, setOpen }) => {
-	const { cartItems } = useContext(CartContext)
+	const { cartItems, setCart } = useContext(CartContext)
 	const { enqueueSnackbar } = useSnackbar()
+
+	const total = 0
 
 	const handleBuy = async () => {
 		await Axios('/api/buy', { items: cartItems }, 'POST')
 		setOpen(false)
 		enqueueSnackbar('Purchase made.')
+		setCart([])
 	}
+
+	const handleDelete = itemId => setCart(cartItems.filter(item => item.itemId !== itemId))
 
 	return cartItems ? (
 		<div className='absolute w-full rounded-b border-t-0 z-10'>
 			<div className={`shadow-xl w-64 rounded-lg ${open ? 'relative' : 'hidden'}`}>
 				{cartItems.length > 0 ? (
 					cartItems.map(({ itemId, title, description, price, image, quantity }) => {
+						total += price * quantity
 						return (
 							<div
 								key={itemId}
@@ -37,7 +43,7 @@ const Cart = ({ open, setOpen }) => {
 								</div>
 								<div className='flex flex-col w-18 font-medium items-end'>
 									<div className='w-4 h-4 mb-6 hover:bg-red-200 rounded-full cursor-pointer text-red-700'>
-										<DeleteButton onClick={() => console.log('delete')} />
+										<DeleteButton onClick={() => handleDelete(itemId)} />
 									</div>
 									{price}$
 								</div>
@@ -55,8 +61,9 @@ const Cart = ({ open, setOpen }) => {
 						color='success'
 						size='sm'
 						onClick={handleBuy}
+						className='z-50'
 					>
-						Buy (X$)
+						Buy ({total}$)
 					</Button>
 				</div>
 			</div>
@@ -66,7 +73,7 @@ const Cart = ({ open, setOpen }) => {
 	)
 }
 
-const DeleteButton = () => {
+const DeleteButton = ({ onClick }) => {
 	return (
 		<svg
 			xmlns='http://www.w3.org/2000/svg'
@@ -79,6 +86,7 @@ const DeleteButton = () => {
 			strokeLinecap='round'
 			strokeLinejoin='round'
 			className='feather feather-trash-2 '
+			onClick={onClick}
 		>
 			<polyline points='3 6 5 6 21 6'></polyline>
 			<path d='M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2'></path>

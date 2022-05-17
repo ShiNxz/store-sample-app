@@ -1,16 +1,3 @@
-/*
-1. /admin (Working time estimate 1.5h) Required
-This page will display all available products, one item in a row.
-Each item consists of the following:
-• Title (name of product)
-• Price (USD)
-• Description (Up to X characters)
-• Image - when editing/adding use an input field to paste urls from google (as opposed to
-a file uploader)
-Clicking the edit button will open a modal box to edit all product data.
-Clicking the add button will open a modal box that will allow the user to add a new product that
-will show in the list.
-*/
 import AppContext from '@/data/AppContext'
 import fetcher from '@/utils/fetcher'
 import { useContext, useEffect, useState } from 'react'
